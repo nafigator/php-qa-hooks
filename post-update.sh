@@ -1,4 +1,5 @@
-#!/usr/local/bin/bash
+#!/usr/bin/env bash
+
 #
 # An example hook script to prepare a packed repository for use over
 # dumb transports.
@@ -12,5 +13,5 @@ echo "Test environment syncronization"
 git pull
 status=$?
 if [ $status == 0 ]; then
-    echo "Success!"
+	echo "Success!"
 fi

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # --- Safety check
 if [ -z "$GIT_DIR" ]; then
