@@ -63,9 +63,9 @@ check_dependencies() {
 	for i in ${commands}; do
 		command -v ${i} >/dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			debug "$(printf "%-16s %-50.50s [%2s]" "Check" "$i" "\033[0;32mOK\033[0m")"
+			debug "$(printf "%-5s %-61.61s [%2s]" "Check" "$i" "\033[0;32mOK\033[0m")"
 		else
-			debug "$(printf "%-16s %-50.50s [%4s]" "Check" "$i" "\033[0;31mFAIL\033[0m")"
+			debug "$(printf "%-5s %-61.61s [%4s]" "Check" "$i" "\033[0;31mFAIL\033[0m")"
 			result=1
 		fi
 	done
