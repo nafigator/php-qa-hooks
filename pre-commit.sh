@@ -44,9 +44,9 @@ warning() {
 
 # Function for debug messages
 debug() {
-	[ ! -z "$DEBUG" ] && printf "[$(date +%F\ %T.%N)] \033[0;32mDEBUG\033[0m: $@\n";
-
-	return 0
+	if [ ! -z "$DEBUG" ]; then
+		printf "[$(date +%F\ %T.%N)] \033[0;32mDEBUG\033[0m: $@\n";
+	fi
 }
 
 # Check for utils used in script
@@ -132,4 +132,6 @@ printf "$DUMPS" | while IFS="\n" read -r line; do
 	warning "$line"
 done
 
-[ ! -z "$ERRORS" ] && exit 1
+if [ ! -z "$ERRORS" ]; then
+	exit 1
+fi
