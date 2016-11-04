@@ -110,7 +110,6 @@ get_files() {
 
 check_dependencies || exit 1
 
-REPO_ROOT=$(git rev-parse --show-toplevel)		&& debug "REPO_ROOT: $REPO_ROOT" 		|| exit 1
 SYNTAX_FLAG=$(get_config_bool check.php.syntax)	&& debug 'SYNTAX_FLAG value is valid'	|| exit 1
 DUMP_FLAG=$(get_config_bool check.php.dumps)	&& debug 'DUMP_FLAG value is valid'		|| exit 1
 FILES=$(get_files)								&& debug "FILES: \n${FILES}"			|| exit 1
