@@ -96,6 +96,8 @@ check_dumps() {
 
 	if [ ! -z "$output" ]; then
 		DUMPS="$DUMPS$(printf "$1 on line $output")\n"
+	else
+		inform "PHP dumps check $1 ... OK"
 	fi
 
 	return ${result}
