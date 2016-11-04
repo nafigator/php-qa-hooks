@@ -102,15 +102,14 @@ check_dumps() {
 	debug "Dumps check $1"
 	output="$(egrep -n '(var_dump|var_export)' $1)"
 
-	lines=$(printf "$output" | wc -l)
-
 	if [ ! -z "$output" ]; then
+		lines=$(printf "$output\n" | wc -l)
 		inform "$(printf "%16s %-51.51s [%4s]" "PHP dumps check" "$1" "\033[0;31mFAIL\033[0m")"
 
 		if [ ${lines} -gt 1 ]; then
-			printf "$output" | while IFS="\n" read -r line; do
+			while IFS="\n" read -r line; do
 				DUMPS="$DUMPS$(printf "$1 on line $line")\n"
-			done
+			done < <(printf "$output\n")
 		elif [ ${lines} -eq 1 ]; then
 			DUMPS="$DUMPS$(printf "$1 on line $output")\n"
 		fi
@@ -146,13 +145,13 @@ done
 	check_dumps	${file}
 done
 
-printf "$ERRORS" | while IFS="\n" read line; do
+while IFS="\n" read line; do
 	error "$line"
-done
+done < <(printf "$ERRORS")
 
-printf "$DUMPS" | while IFS="\n" read line; do
+while IFS="\n" read line; do
 	warning "$line"
-done
+done < <(printf "$DUMPS")
 
 if [ ! -z "$ERRORS" ]; then
 	exit 1
