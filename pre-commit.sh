@@ -44,7 +44,9 @@ warning() {
 
 # Function for debug messages
 debug() {
-	[ ! -z "$DEBUG" ] && printf "[$(date +%F\ %T.%N)] \033[0;32mDEBUG\033[0m: $@\n"
+	[ ! -z "$DEBUG" ] && printf "[$(date +%F\ %T.%N)] \033[0;32mDEBUG\033[0m: $@\n";
+
+	return 0
 }
 
 # Check for utils used in script
