@@ -2,7 +2,7 @@
 #
 # pre-commit.sh
 #
-# Check for PHP syntax errors and want about debug functions before commit
+# Check for PHP syntax errors and warn about debug functions before commit
 #
 # Git Config Options
 #	check.php.syntax : (type: boolean) enable|disable PHP syntax check
