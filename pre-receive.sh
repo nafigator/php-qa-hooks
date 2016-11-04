@@ -11,9 +11,9 @@ fi
 status=0
 
 while read old_rev new_rev ref_name; do
-	for script in `find $PWD/hooks/pre-receive.d/ -perm -100 -type f`; do
+	for script in $(find $PWD/hooks/pre-receive.d/ -perm -100 -type f); do
 		${script} "$old_rev" "$new_rev" "$ref_name"
-		if [ "$?" -ne 0 ]; then
+		if [ $? -ne 0 ]; then
 			status=1
 		fi
 	done

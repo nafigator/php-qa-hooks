@@ -107,7 +107,7 @@ check_dumps() {
 		inform "$(printf "%16s %-51.51s [%4s]" "PHP dumps check" "$1" "\033[0;31mFAIL\033[0m")"
 
 		if [ ${lines} -gt 1 ]; then
-			while IFS="\n" read -r line; do
+			while read line; do
 				DUMPS="$DUMPS$(printf "$1 on line $line")\n"
 			done < <(printf "$output\n")
 		elif [ ${lines} -eq 1 ]; then
@@ -145,11 +145,11 @@ done
 	check_dumps	${file}
 done
 
-while IFS="\n" read line; do
+while read line; do
 	error "$line"
 done < <(printf "$ERRORS")
 
-while IFS="\n" read line; do
+while read line; do
 	warning "$line"
 done < <(printf "$DUMPS")
 

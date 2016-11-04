@@ -11,7 +11,7 @@ umask 002
 cd /path/to/clone/dir
 echo "Test environment syncronization"
 git pull
-status=$?
-if [ $status == 0 ]; then
+
+if [ $? -eq 0 ]; then
 	echo "Success!"
 fi
