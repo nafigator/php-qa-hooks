@@ -15,7 +15,7 @@ FORMAT='+%F %T'
 
 # Function for bool values validation
 get_config_bool() {
-	local value=$(git config --get $1)
+	local value=$(git config --bool $1)
 	local result=0
 
 	if [[ ! -z "$value" && -z "$(echo "$value" | egrep '^(true|false)$')" ]]; then
@@ -137,7 +137,7 @@ FILES=$(get_files)								&& debug "FILES: \n${FILES}"			|| exit 1
 ERRORS=''
 DUMPS=''
 
-[ "$SYNTAX_FLAG" ]	 && for file in ${FILES}; do
+[ "$SYNTAX_FLAG" ] && for file in ${FILES}; do
 	check_syntax ${file}
 done
 
