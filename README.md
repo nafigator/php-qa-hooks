@@ -21,7 +21,7 @@ Check for PHP syntax and debug functions before commit
 ###Features
 * Customization by git config options
 * Check for PHP syntax before commit
-* Warn bout PHP dump functions (var_dump(), var_export())
+* Warn about PHP dump functions (var_dump(), var_export())
 * Colored output
 
 ###Installation
