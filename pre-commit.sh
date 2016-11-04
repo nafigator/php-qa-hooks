@@ -11,6 +11,7 @@
 # Author:	Yancharuk Alexander <alex at itvault dot info>
 
 DEBUG=;
+FORMAT='+%F %T'
 
 # Function for bool values validation
 get_config_bool() {
@@ -29,38 +30,42 @@ get_config_bool() {
 
 # Function for error messages
 error() {
-	printf "[$(date +%F\ %T)] \033[0;31mERROR\033[0m: $@\n" >&2
+	printf "[$(date "$FORMAT")] \033[0;31mERROR\033[0m: $@\n" >&2
 }
 
 # Function for informational messages
 inform() {
-	printf "[$(date +%F\ %T)] \033[0;32mINFO\033[0m: $@\n"
+	printf "[$(date "$FORMAT")] \033[0;32mINFO\033[0m: $@\n"
 }
 
 # Function for warning messages
 warning() {
-	printf "[$(date +%F\ %T)] \033[0;33mWARNING\033[0m: $@\n" >&2
+	printf "[$(date "$FORMAT")] \033[0;33mWARNING\033[0m: $@\n" >&2
 }
 
 # Function for debug messages
 debug() {
 	if [ ! -z "$DEBUG" ]; then
-		printf "[$(date +%F\ %T.%N)] \033[0;32mDEBUG\033[0m: $@\n";
+		FORMAT='+%F %T.%N'
+	fi
+
+	if [ ! -z "$DEBUG" ]; then
+		printf "[$(date "$FORMAT")] \033[0;32mDEBUG\033[0m: $@\n";
 	fi
 }
 
 # Check for utils used in script
 check_dependencies() {
-	local commands='grep egrep date php git'
+	local commands='grep egrep date php git wc'
 	local result=0
 	local i=0
 
 	for i in ${commands}; do
 		command -v ${i} >/dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			debug "Check $i ... OK"
+			debug "$(printf "%-16s %-50.50s [%2s]" "Check" "$i" "\033[0;32mOK\033[0m")"
 		else
-			error "Check $i ... FAIL"
+			debug "$(printf "%-16s %-50.50s [%4s]" "Check" "$i" "\033[0;31mFAIL\033[0m")"
 			result=1
 		fi
 	done
@@ -77,8 +82,9 @@ check_syntax() {
 	output="$(php -l $1 2>&1)"
 
 	if [ $? -eq 0 ]; then
-		inform "Syntax check $1 ... OK"
+		inform "$(printf "%13s %-54.54s [%2s]" "Syntax check" "$1" "\033[0;32mOK\033[0m")"
 	else
+		inform "$(printf "%13s %-54.54s [%4s]" "Syntax check" "$1" "\033[0;31mFAIL\033[0m")"
 		ERRORS="$ERRORS$(printf "$output" | grep "Parse error")\n"
 		result=1
 	fi
@@ -90,14 +96,26 @@ check_syntax() {
 check_dumps() {
 	local result=0
 	local output=''
+	local line=''
+	local lines=0
 
 	debug "Dumps check $1"
 	output="$(egrep -n '(var_dump|var_export)' $1)"
 
+	lines=$(printf "$output" | wc -l)
+
 	if [ ! -z "$output" ]; then
-		DUMPS="$DUMPS$(printf "$1 on line $output")\n"
+		inform "$(printf "%16s %-51.51s [%4s]" "PHP dumps check" "$1" "\033[0;31mFAIL\033[0m")"
+
+		if [ ${lines} -gt 1 ]; then
+			printf "$output" | while IFS="\n" read -r line; do
+				DUMPS="$DUMPS$(printf "$1 on line $line")\n"
+			done
+		elif [ ${lines} -eq 1 ]; then
+			DUMPS="$DUMPS$(printf "$1 on line $output")\n"
+		fi
 	else
-		inform "PHP dumps check $1 ... OK"
+		inform "$(printf "%16s %-51.51s [%2s]" "PHP dumps check" "$1" "\033[0;32mOK\033[0m")"
 	fi
 
 	return ${result}
@@ -120,17 +138,19 @@ FILES=$(get_files)								&& debug "FILES: \n${FILES}"			|| exit 1
 ERRORS=''
 DUMPS=''
 
-for file in ${FILES}; do
-	debug "Processing $file"
-	[ "$SYNTAX_FLAG" ]	&& check_syntax ${file}
-	[ "$DUMP_FLAG" ]	&& check_dumps	${file}
+[ "$SYNTAX_FLAG" ]	 && for file in ${FILES}; do
+	check_syntax ${file}
 done
 
-printf "$ERRORS" | while IFS="\n" read -r line; do
+[ "$DUMP_FLAG" ] && for file in ${FILES}; do
+	check_dumps	${file}
+done
+
+printf "$ERRORS" | while IFS="\n" read line; do
 	error "$line"
 done
 
-printf "$DUMPS" | while IFS="\n" read -r line; do
+printf "$DUMPS" | while IFS="\n" read line; do
 	warning "$line"
 done
 
