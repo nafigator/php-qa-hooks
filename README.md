@@ -12,19 +12,19 @@ Check for PHP syntax and debug functions before commit
 
 ![Alt php-bench](https://github.com/nafigator/git-hooks/raw/master/pre-commit.png)
 
-###Requirements
+### Requirements
 * git
 * bash
 * PHP
 * Coreutils
 
-###Features
+### Features
 * Customization by git config options
 * Check for PHP syntax before commit
 * Warn about PHP dump functions (var_dump(), var_export())
 * Colored output
 
-###Installation
+### Installation
 
 Add to your project _.git/config_ options:
 
