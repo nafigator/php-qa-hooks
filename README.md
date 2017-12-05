@@ -21,7 +21,8 @@ Check for PHP syntax and debug functions before commit
 ### Features
 * Customization by git config options
 * Check for PHP syntax before commit
-* Warn about PHP dump functions (var_dump(), var_export())
+* Check for Git conflict markups before commit
+* Warn about PHP dump functions (var_dump(), var_export(), print_r())
 * Colored output
 
 ### Installation
@@ -31,10 +32,13 @@ Add to your project _.git/config_ options:
     [check.php]
         syntax = true
         dumps = true
+        conflicts = true
 
 Copy **pre-commit.sh** to _.git/hooks_ folder in your working copy of project:
 
-    cp pre-commit.sh <path to project>/.git/hooks/pre-commit
+    cd <path to project> \
+    curl -s https://raw.githubusercontent.com/nafigator/git-hooks/master/pre-commit.sh > .git/hooks/pre-commit && \
+    chmod +x .git/hooks/pre-commit
 
   [License img]: https://img.shields.io/badge/license-BSD3-brightgreen.svg
   [License src]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)

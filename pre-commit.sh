@@ -10,8 +10,14 @@
 #
 # Author:	Yancharuk Alexander <alex at itvault dot info>
 
-DEBUG=;
-FORMAT='+%F %T'
+# https://en.wikipedia.org/wiki/ANSI_escape_code
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+GRAY="\e[38;5;242m"
+BOLD="\e[1m"
+CLR="\e[0m"
+DEBUG=
 
 # Function for bool values validation
 get_config_bool() {
@@ -28,47 +34,97 @@ get_config_bool() {
 	return ${result}
 }
 
+
+format_date() {
+	printf "$GRAY$(date +'%Y-%m-%d %H:%M:%S')$CLR"
+
+	return 0
+}
+
 # Function for error messages
 error() {
-	printf "[$(date "$FORMAT")] \033[0;31mERROR\033[0m: $@\n" >&2
+	printf "[$(format_date)]: ${RED}ERROR:$CLR $@\n" >&2
 }
 
 # Function for informational messages
 inform() {
-	printf "[$(date "$FORMAT")] \033[0;32mINFO\033[0m: $@\n"
+	printf "[$(format_date)]: ${GREEN}INFO:$CLR $@\n"
 }
 
 # Function for warning messages
 warning() {
-	printf "[$(date "$FORMAT")] \033[0;33mWARNING\033[0m: $@\n" >&2
+	printf "[$(format_date)]: ${YELLOW}WARNING:$CLR $@\n" >&2
 }
 
 # Function for debug messages
 debug() {
-	if [ ! -z "$DEBUG" ]; then
-		FORMAT='+%F %T.%N'
-	fi
-
-	if [ ! -z "$DEBUG" ]; then
-		printf "[$(date "$FORMAT")] \033[0;32mDEBUG\033[0m: $@\n";
-	fi
+	[ ! -z ${DEBUG} ] && printf "[$(format_date)]: ${GREEN}DEBUG:$CLR $@\n"
 }
 
-# Check for utils used in script
-check_dependencies() {
-	local commands='grep egrep date php git wc'
-	local result=0
-	local i=0
+# Function for operation status
+#
+# Usage: status MESSAGE STATUS
+# Examples:
+# status 'Upload scripts' $?
+# status 'Run operation' OK
+status() {
+	if [ -z "$1" ] || [ -z "$2" ]; then
+		error "Not found required parameters!"
+		return 1
+	fi
 
-	for i in ${commands}; do
+	local result=0
+
+	if [ $2 = 'OK' ]; then
+		printf "[$(format_date)]: %-60b[$GREEN%s$CLR]\n" "$1" "OK"
+	elif [ $2 = 'FAIL' ]; then
+		printf "[$(format_date)]: %-60b[$RED%s$CLR]\n" "$1" "FAIL"
+		result=1
+	elif [ $2 = 0 ]; then
+		printf "[$(format_date)]: %-60b[$GREEN%s$CLR]\n" "$1" "OK"
+	elif [ $2 > 0 ]; then
+		printf "[$(format_date)]: %-60b[$RED%s$CLR]\n" "$1" "FAIL"
+		result=1
+	fi
+
+	return ${result}
+}
+
+# Function for status on some command in debug mode only
+status_dbg() {
+	[ -z ${DEBUG} ] && return 0
+
+	local result=0
+
+	if [ $2 = 'OK' ]; then
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$GREEN%s$CLR]\n" "$1" "OK"
+	elif [ $2 = 'FAIL' ]; then
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$RED%s$CLR]\n" "$1" "FAIL"
+	elif [ $2 = 0 ]; then
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$GREEN%s$CLR]\n" "$1" "OK"
+	elif [ $2 > 0 ]; then
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$RED%s$CLR]\n" "$1" "FAIL"
+		result=1
+	fi
+
+	return ${result}
+}
+
+# Function for checking script dependencies
+check_dependencies() {
+	local result=0
+
+	for i in ${@}; do
 		command -v ${i} >/dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			debug "$(printf "%-5s %-61.61s [%2s]" "Check" "$i" "\033[0;32mOK\033[0m")"
+			status_dbg "DEPENDENCY: $i" OK
 		else
-			debug "$(printf "%-5s %-61.61s [%4s]" "Check" "$i" "\033[0;31mFAIL\033[0m")"
+			warning "$i command not available"
 			result=1
 		fi
 	done
+
+	debug "check_dependencies() result: $result"
 
 	return ${result}
 }
@@ -82,9 +138,9 @@ check_syntax() {
 	output="$(php -l $1 2>&1)"
 
 	if [ $? -eq 0 ]; then
-		inform "$(printf "%13s %-54.54s [%2s]" "Syntax check" "$1" "\033[0;32mOK\033[0m")"
+		status "${GREEN}SYNTAX:${CLR} $1" OK
 	else
-		inform "$(printf "%13s %-54.54s [%4s]" "Syntax check" "$1" "\033[0;31mFAIL\033[0m")"
+		status "${GREEN}SYNTAX:${CLR} $1" FAIL
 		ERRORS="$ERRORS$(printf "$output" | grep "Parse error")\n"
 		result=1
 	fi
@@ -99,12 +155,11 @@ check_dumps() {
 	local line=''
 	local lines=0
 
-	debug "Dumps check $1"
-	output="$(egrep -n '(var_dump|var_export)' $1)"
+	output="$(egrep -n '(var_dump|var_export|print_r)' $1)"
 
 	if [ ! -z "$output" ]; then
 		lines=$(printf "$output\n" | wc -l)
-		inform "$(printf "%16s %-51.51s [%4s]" "PHP dumps check" "$1" "\033[0;31mFAIL\033[0m")"
+		status "${GREEN}DUMPS:${CLR} $1" FAIL
 
 		if [ ${lines} -gt 1 ]; then
 			while read line; do
@@ -114,14 +169,42 @@ check_dumps() {
 			DUMPS="$DUMPS$(printf "$1 on line $output")\n"
 		fi
 	else
-		inform "$(printf "%16s %-51.51s [%2s]" "PHP dumps check" "$1" "\033[0;32mOK\033[0m")"
+		status "${GREEN}DUMPS:${CLR} $1" OK
+	fi
+
+	return ${result}
+}
+
+# Function for checking git conflicts
+check_conflicts() {
+	local result=0
+	local output=''
+	local line=''
+	local lines=0
+
+	debug "Git conflicts check $1"
+	output="$(egrep -n '(=======|<<<<<<<|>>>>>>>)' $1)"
+
+	if [ ! -z "$output" ]; then
+		lines=$(printf "$output\n" | wc -l)
+		status "${GREEN}CONFLICTS:${CLR} $1" FAIL
+
+		if [ ${lines} -gt 1 ]; then
+			while read line; do
+				CONFLICTS="$CONFLICTS$(printf "$1 on line $line")\n"
+			done < <(printf "$output\n")
+		elif [ ${lines} -eq 1 ]; then
+			CONFLICTS="$CONFLICTS$(printf "$1 on line $output")\n"
+		fi
+	else
+		status "${GREEN}CONFLICTS:${CLR} $1" OK
 	fi
 
 	return ${result}
 }
 
 # Function returns list of changed PHP files
-get_files() {
+get_php_files() {
 	local result=0
 
 	git diff --cached --name-only --diff-filter=ACMR | egrep '(.php$|.phtml)$'
@@ -129,20 +212,36 @@ get_files() {
 	return ${result}
 }
 
-check_dependencies || exit 1
+# Function returns list of all changed files
+get_files() {
+	local result=0
 
-SYNTAX_FLAG=$(get_config_bool check.php.syntax)	&& debug 'SYNTAX_FLAG value is valid'	|| exit 1
-DUMP_FLAG=$(get_config_bool check.php.dumps)	&& debug 'DUMP_FLAG value is valid'		|| exit 1
-FILES=$(get_files)								&& debug "FILES: \n${FILES}"			|| exit 1
+	git diff --cached --name-only --diff-filter=ACMR
+
+	return ${result}
+}
+
+check_dependencies grep egrep date php git wc || exit 1
+
+SYNTAX_FLAG=$(get_config_bool check.php.syntax)			|| exit 1
+DUMP_FLAG=$(get_config_bool check.php.dumps)			|| exit 1
+CONFLICT_FLAG=$(get_config_bool check.php.conflicts)	|| exit 1
+PHP_FILES=$(get_php_files)								|| exit 1
+FILES=$(get_files)										|| exit 1
 ERRORS=''
 DUMPS=''
+CONFLICTS=''
 
-[ "$SYNTAX_FLAG" ] && for file in ${FILES}; do
+[ "$SYNTAX_FLAG" ] && for file in ${PHP_FILES}; do
 	check_syntax ${file}
 done
 
-[ "$DUMP_FLAG" ] && for file in ${FILES}; do
+[ "$DUMP_FLAG" ] && for file in ${PHP_FILES}; do
 	check_dumps	${file}
+done
+
+[ "$CONFLICT_FLAG" ] && for file in ${FILES}; do
+	check_conflicts	${file}
 done
 
 while read line; do
@@ -152,6 +251,10 @@ done < <(printf "$ERRORS")
 while read line; do
 	warning "$line"
 done < <(printf "$DUMPS")
+
+while read line; do
+	error "$line"
+done < <(printf "$CONFLICTS")
 
 if [ ! -z "$ERRORS" ]; then
 	exit 1
