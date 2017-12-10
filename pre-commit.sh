@@ -18,6 +18,7 @@ GRAY="\e[38;5;242m"
 BOLD="\e[1m"
 CLR="\e[0m"
 DEBUG=
+STATUS_LENGTH=60
 
 # Function for bool values validation
 get_config_bool() {
@@ -76,14 +77,14 @@ status() {
 	local result=0
 
 	if [ $2 = 'OK' ]; then
-		printf "[$(format_date)]: %-60b[$GREEN%s$CLR]\n" "$1" "OK"
+		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$GREEN%s$CLR]\n" "$1" "OK"
 	elif [ $2 = 'FAIL' ]; then
-		printf "[$(format_date)]: %-60b[$RED%s$CLR]\n" "$1" "FAIL"
+		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$RED%s$CLR]\n" "$1" "FAIL"
 		result=1
 	elif [ $2 = 0 ]; then
-		printf "[$(format_date)]: %-60b[$GREEN%s$CLR]\n" "$1" "OK"
+		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$GREEN%s$CLR]\n" "$1" "OK"
 	elif [ $2 > 0 ]; then
-		printf "[$(format_date)]: %-60b[$RED%s$CLR]\n" "$1" "FAIL"
+		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$RED%s$CLR]\n" "$1" "FAIL"
 		result=1
 	fi
 
@@ -94,16 +95,19 @@ status() {
 status_dbg() {
 	[ -z ${DEBUG} ] && return 0
 
+	local length=$(( ${STATUS_LENGTH} - 7 ))
 	local result=0
 
+	debug "length: $length"
+
 	if [ $2 = 'OK' ]; then
-		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$GREEN%s$CLR]\n" "$1" "OK"
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$GREEN%s$CLR]\n" "$1" "OK"
 	elif [ $2 = 'FAIL' ]; then
-		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$RED%s$CLR]\n" "$1" "FAIL"
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$RED%s$CLR]\n" "$1" "FAIL"
 	elif [ $2 = 0 ]; then
-		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$GREEN%s$CLR]\n" "$1" "OK"
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$GREEN%s$CLR]\n" "$1" "OK"
 	elif [ $2 > 0 ]; then
-		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-53b[$RED%s$CLR]\n" "$1" "FAIL"
+		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$RED%s$CLR]\n" "$1" "FAIL"
 		result=1
 	fi
 
@@ -138,9 +142,9 @@ check_syntax() {
 	output="$(php -l $1 2>&1)"
 
 	if [ $? -eq 0 ]; then
-		status "${GREEN}SYNTAX:${CLR} $1" OK
+		status "SYNTAX: $1" OK
 	else
-		status "${GREEN}SYNTAX:${CLR} $1" FAIL
+		status "SYNTAX: $1" FAIL
 		ERRORS="$ERRORS$(printf "$output" | grep "Parse error")\n"
 		result=1
 	fi
@@ -159,7 +163,7 @@ check_dumps() {
 
 	if [ ! -z "$output" ]; then
 		lines=$(printf "$output\n" | wc -l)
-		status "${GREEN}DUMPS:${CLR} $1" FAIL
+		status "DUMPS: $1" FAIL
 
 		if [ ${lines} -gt 1 ]; then
 			while read line; do
@@ -168,8 +172,10 @@ check_dumps() {
 		elif [ ${lines} -eq 1 ]; then
 			DUMPS="$DUMPS$(printf "$1 on line $output")\n"
 		fi
+
+		result=1
 	else
-		status "${GREEN}DUMPS:${CLR} $1" OK
+		status "DUMPS: $1" OK
 	fi
 
 	return ${result}
@@ -187,7 +193,7 @@ check_conflicts() {
 
 	if [ ! -z "$output" ]; then
 		lines=$(printf "$output\n" | wc -l)
-		status "${GREEN}CONFLICTS:${CLR} $1" FAIL
+		status "CONFLICTS: $1" FAIL
 
 		if [ ${lines} -gt 1 ]; then
 			while read line; do
@@ -196,8 +202,10 @@ check_conflicts() {
 		elif [ ${lines} -eq 1 ]; then
 			CONFLICTS="$CONFLICTS$(printf "$1 on line $output")\n"
 		fi
+
+		result=1
 	else
-		status "${GREEN}CONFLICTS:${CLR} $1" OK
+		status "CONFLICTS: $1" OK
 	fi
 
 	return ${result}
@@ -221,6 +229,17 @@ get_files() {
 	return ${result}
 }
 
+check_status_length() {
+	for file in ${FILES}; do
+		debug "FILE length: ${#file}"
+		debug "STATUS_LENGTH before check: ${STATUS_LENGTH}"
+		if [ ${#file} -gt ${STATUS_LENGTH} ]; then
+			STATUS_LENGTH=$(( ${#file} + 14 ))
+			debug "STATUS_LENGTH: $STATUS_LENGTH"
+		fi
+	done
+}
+
 check_dependencies grep egrep date php git wc || exit 1
 
 SYNTAX_FLAG=$(get_config_bool check.php.syntax)			|| exit 1
@@ -231,6 +250,8 @@ FILES=$(get_files)										|| exit 1
 ERRORS=''
 DUMPS=''
 CONFLICTS=''
+
+check_status_length
 
 [ "$SYNTAX_FLAG" ] && for file in ${PHP_FILES}; do
 	check_syntax ${file}
@@ -257,5 +278,9 @@ while read line; do
 done < <(printf "$CONFLICTS")
 
 if [ ! -z "$ERRORS" ]; then
+	exit 1
+fi
+
+if [ ! -z "$CONFLICTS" ]; then
 	exit 1
 fi
