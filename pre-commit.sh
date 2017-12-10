@@ -159,7 +159,7 @@ check_dumps() {
 	local line=''
 	local lines=0
 
-	output="$(egrep -n '(var_dump|var_export|print_r)' $1)"
+	output="$(egrep -Tn '(var_dump|var_export|print_r)' $1)"
 
 	if [ ! -z "$output" ]; then
 		lines=$(printf "$output\n" | wc -l)
