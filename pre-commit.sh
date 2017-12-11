@@ -82,7 +82,7 @@ status() {
 		result=1
 	elif [ $2 = 0 ]; then
 		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$GREEN%s$CLR]\n" "$1" "OK"
-	elif [ $2 > 0 ]; then
+	elif [ $2 -gt 0 ]; then
 		printf "[$(format_date)]: %-${STATUS_LENGTH}b[$RED%s$CLR]\n" "$1" "FAIL"
 		result=1
 	fi
@@ -97,7 +97,7 @@ status_dbg() {
 	local length=$(( ${STATUS_LENGTH} - 7 ))
 	local result=0
 
-	debug "length: $length"
+	#debug "status_dbg length: $length"
 
 	if [ $2 = 'OK' ]; then
 		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$GREEN%s$CLR]\n" "$1" "OK"
@@ -105,7 +105,7 @@ status_dbg() {
 		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$RED%s$CLR]\n" "$1" "FAIL"
 	elif [ $2 = 0 ]; then
 		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$GREEN%s$CLR]\n" "$1" "OK"
-	elif [ $2 > 0 ]; then
+	elif [ $2 -gt 0 ]; then
 		printf "[$(format_date)]: ${GREEN}DEBUG:$CLR %-${length}b[$RED%s$CLR]\n" "$1" "FAIL"
 		result=1
 	fi
@@ -116,18 +116,21 @@ status_dbg() {
 # Function for checking script dependencies
 check_dependencies() {
 	local result=0
+	local cmd_status
 
 	for i in ${@}; do
 		command -v ${i} >/dev/null 2>&1
-		if [ $? -eq 0 ]; then
-			status_dbg "DEPENDENCY: $i" OK
-		else
+		cmd_status=$?
+
+		#status_dbg "DEPENDENCY: $i" ${cmd_status}
+
+		if [ ${cmd_status} -ne 0 ]; then
 			warning "$i command not available"
 			result=1
 		fi
 	done
 
-	debug "check_dependencies() result: $result"
+	#debug "check_dependencies() result: $result"
 
 	return ${result}
 }
@@ -137,7 +140,7 @@ check_syntax() {
 	local result=0
 	local output=''
 
-	debug "Syntax check $1"
+	#debug "Syntax check $1"
 	output="$(php -l $1 2>&1)"
 
 	if [ $? -eq 0 ]; then
@@ -187,7 +190,7 @@ check_conflicts() {
 	local line=''
 	local lines=0
 
-	debug "Git conflicts check $1"
+	#debug "Git conflicts check $1"
 	output="$(egrep -n '(=======|<<<<<<<|>>>>>>>)' $1)"
 
 	if [ ! -z "$output" ]; then
@@ -228,13 +231,14 @@ get_files() {
 	return ${result}
 }
 
-check_status_length() {
-	for file in ${FILES}; do
-		debug "FILE length: ${#file}"
-		debug "STATUS_LENGTH before check: ${STATUS_LENGTH}"
-		if [ ${#file} -gt ${STATUS_LENGTH} ]; then
-			STATUS_LENGTH=$(( ${#file} + 14 ))
-			debug "STATUS_LENGTH: $STATUS_LENGTH"
+# Function for update status formatting length
+update_status_length() {
+	for i in ${@}; do
+		#debug "Element length: ${#i}"
+		#debug "STATUS_LENGTH before check: ${STATUS_LENGTH}"
+		if [ ${#i} -gt ${STATUS_LENGTH} ]; then
+			STATUS_LENGTH=$(( ${#i} + 14 ))
+			#debug "STATUS_LENGTH: $STATUS_LENGTH"
 		fi
 	done
 }
@@ -250,7 +254,7 @@ ERRORS=''
 DUMPS=''
 CONFLICTS=''
 
-check_status_length
+update_status_length ${FILES}
 
 [ "$SYNTAX_FLAG" ] && for file in ${PHP_FILES}; do
 	check_syntax ${file}
