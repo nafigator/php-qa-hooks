@@ -36,11 +36,9 @@ get_config_bool() {
 	return ${result}
 }
 
-
+# Function for datetime output
 format_date() {
 	printf "$GRAY$(date +'%Y-%m-%d %H:%M:%S')$CLR"
-
-	return 0
 }
 
 # Function for error messages
