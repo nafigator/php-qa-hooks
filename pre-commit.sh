@@ -5,8 +5,9 @@
 # Check for PHP syntax errors and warn about debug functions before commit
 #
 # Git Config Options
-#	check.php.syntax : (type: boolean) enable|disable PHP syntax check
-#	check.php.dumps  : (type: boolean) enable|disable check for var_dump|var_export functions
+#	check.php.syntax    : (type: boolean) enable|disable PHP syntax check
+#	check.php.dumps     : (type: boolean) enable|disable check for var_dump|var_export|print_r functions
+#	check.php.conflicts : (type: boolean) enable|disable check for git conflict markup
 #
 # Author:	Yancharuk Alexander <alex at itvault dot info>
 
