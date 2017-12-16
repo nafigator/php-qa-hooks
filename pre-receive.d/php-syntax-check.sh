@@ -31,7 +31,7 @@ while read line; do
 		continue
 	fi
 
-	output=$(git cat-file blob ${new_sha1} | ${php} -l 2>&1 >/dev/null)
+	output=$(git cat-file blob ${new_sha1} | ${php} -l 2>&1)
 
 	if [ "$?" -ne 0 ]; then
 		output=$(echo ${output} | sed "s# - # $name #g")
