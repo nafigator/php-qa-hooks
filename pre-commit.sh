@@ -38,7 +38,7 @@ get_config_bool() {
 
 # Function for datetime output
 format_date() {
-	printf "$GRAY$(date +'%Y-%m-%d %H:%M:%S')$CLR"
+	printf "$GRAY$(date +%Y-%m-%d\ %H:%M:%S)$CLR"
 }
 
 # Function for error messages
