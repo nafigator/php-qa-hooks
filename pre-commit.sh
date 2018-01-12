@@ -236,8 +236,8 @@ update_status_length() {
 	for i in ${@}; do
 		#debug "Element length: ${#i}"
 		#debug "STATUS_LENGTH before check: ${STATUS_LENGTH}"
-		if [ ${#i} -gt ${STATUS_LENGTH} ]; then
-			STATUS_LENGTH=$(( ${#i} + 14 ))
+		if [ ${#i} -gt $(( ${STATUS_LENGTH} - 11 )) ]; then
+			STATUS_LENGTH=$(( ${STATUS_LENGTH} + $(( ${#i} - ${STATUS_LENGTH} + 12 ))  ))
 			#debug "STATUS_LENGTH: $STATUS_LENGTH"
 		fi
 	done
