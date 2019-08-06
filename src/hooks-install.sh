@@ -2,17 +2,20 @@
 
 function main() {
     readonly local project=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
-    readonly local pre_commit_dst="$project/.git/hooks/pre-commit"
-    readonly local pre_push_dst="$project/.git/hooks/pre-push"
+    readonly local src=$(dirname $(readlink -f "$0"))
+    readonly local config="$project/.git/config"
+    readonly local hooks_dir="$project/.git/hooks"
+    readonly local pre_commit_dst="$hooks_dir/pre-commit"
+    readonly local pre_push_dst="$hooks_dir/pre-push"
 
-	[[ -f "$pre_commit_dst" ]] && rm "$pre_commit_dst"
-	[[ -f "$pre_push_dst" ]] && rm "$pre_push_dst"
+    [[ -f "$pre_commit_dst" ]] && rm "$pre_commit_dst"
+    [[ -f "$pre_push_dst" ]] && rm "$pre_push_dst"
 
-    ln -s "pre-commit.sh" "$pre_commit_dst"
-    ln -s "pre-push.sh" "$pre_push_dst"
+    ln -s "$src/pre-commit.sh" "$pre_commit_dst"
+    ln -s "$src/pre-push.sh" "$pre_push_dst"
 
-    if [[ -z "$(grep check.php "$project/.git/config")" ]]; then
-        printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n" >> .git/config
+    if [[ -z "$(grep check.php ${config})" ]]; then
+        printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n" >> ${config}
     fi
 }
 

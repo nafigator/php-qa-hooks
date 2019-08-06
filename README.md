@@ -34,7 +34,7 @@ Or use this oneliner inside root of project:
 
 ### Install via Composer
 
-	composer require nafigator/git-hooks
+	composer require nafigator/php-qa-hooks
 
 ## Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
@@ -43,10 +43,10 @@ Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.2.0-orange.svg
-  [Release src]: https://github.com/nafigator/bash-helpers
+  [Release img]: https://img.shields.io/badge/release-0.3.0-orange.svg
+  [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.png
-  [License img]: https://img.shields.io/badge/license-BSD3-brightgreen.svg
-  [License src]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)
+  [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
+  [License src]: https://tldrlegal.com/license/mit-license
   [Versioning img]: https://img.shields.io/badge/Semantic%20Versioning-2.0.0-brightgreen.svg
   [Versioning src]: https://semver.org
