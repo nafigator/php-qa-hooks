@@ -3,7 +3,7 @@
     "description": "Git hooks for PHP commits QA.",
     "type": "library",
     "license": "MIT",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "authors": [{
         "name": "Yancharuk Alexander",
         "role": "developer"
@@ -28,10 +28,11 @@
         "sort-packages": true
     },
     "scripts": {
-        "post-install-cmd": [
+        "post-package-install": [
             "config extra.scripts-dev.post-install-cmd vendor/nafigator/php-qa-hooks/src/hooks-install.sh",
             "src/hooks-install.sh"
-        ]
+        ],
+        "pre-package-uninstall": "src/hooks-uninstall.sh"
     },
     "keywords": [
         "git",
