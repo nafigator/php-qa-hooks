@@ -1,4 +1,4 @@
-[![GitHub license][License img]][License src]
+[![GitHub license][License img]][License src] [![GitHub release][Release img]][Release src] [![Conventional Commits][Conventional commits badge]][Conventional commits src] [![Semantic Versioning][Versioning img]][Versioning src]
 
 # PHP QA git hooks
 Git hooks for PHP commits quality assurance
@@ -36,6 +36,17 @@ Or use this oneliner inside root of project:
 
 	composer require nafigator/git-hooks
 
+## Versioning
+This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
+
+Read more on [SemVer.org](http://semver.org).
+
+  [Conventional commits src]: https://conventionalcommits.org
+  [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
+  [Release img]: https://img.shields.io/badge/release-0.1.0-orange.svg
+  [Release src]: https://github.com/nafigator/bash-helpers
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.png
   [License img]: https://img.shields.io/badge/license-BSD3-brightgreen.svg
   [License src]: https://tldrlegal.com/license/bsd-3-clause-license-(revised)
+  [Versioning img]: https://img.shields.io/badge/Semantic%20Versioning-2.0.0-brightgreen.svg
+  [Versioning src]: https://semver.org
