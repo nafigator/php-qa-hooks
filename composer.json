@@ -3,7 +3,7 @@
     "description": "Git hooks for PHP commits QA.",
     "type": "library",
     "license": "MIT",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "authors": [{
         "name": "Yancharuk Alexander",
         "role": "developer"
@@ -16,7 +16,7 @@
     "autoload": {
         "exclude-from-classmap": ["/src/", "/.images/"]
     },
-    "require-dev": {
+    "require": {
         "nafigator/bash-helpers": "0.*",
         "squizlabs/php_codesniffer": "3.*",
         "neronmoon/scriptsdev": "0.*"
