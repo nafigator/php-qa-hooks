@@ -47,12 +47,12 @@ check_syntax() {
 	#debug "Syntax check $1"
 	output="$(php -l $1 2>&1)"
 
-	if [ $? -eq 0 ]; then
-	status "SYNTAX: $1" OK
+	if [[ $? -eq 0 ]]; then
+		status "SYNTAX: $1" OK
 	else
-	status "SYNTAX: $1" FAIL
-	errors="$errors$(printf "$output" | grep "Parse error")\n"
-	result=1
+		status "SYNTAX: $1" FAIL
+		errors="$errors$(printf "$output")\n"
+		result=1
 	fi
 
 	return ${result}
@@ -67,21 +67,21 @@ check_dumps() {
 
 	output="$(egrep -Tn '(var_dump|var_export|print_r)' $1 2>&1)"
 
-	if [ ! -z "$output" ]; then
-	lines=$(printf "$output\n" | wc -l)
-	status "DUMPS: $1" FAIL
+	if [[ ! -z "$output" ]]; then
+		lines=$(printf "$output\n" | wc -l)
+		status "DUMPS: $1" FAIL
 
-	if [ ${lines} -gt 1 ]; then
-		while read line; do
-		dumps="$dumps$(printf "$1 on line $line")\n"
-		done < <(printf "$output\n")
-	elif [ ${lines} -eq 1 ]; then
-		dumps="$dumps$(printf "$1 on line $output")\n"
-	fi
+		if [[ ${lines} -gt 1 ]]; then
+			while read line; do
+				dumps="$dumps$(printf "$1 on line $line")\n"
+			done < <(printf "$output\n")
+		elif [[ ${lines} -eq 1 ]]; then
+			dumps="$dumps$(printf "$1 on line $output")\n"
+		fi
 
-	result=1
+		result=1
 	else
-	status "DUMPS: $1" OK
+		status "DUMPS: $1" OK
 	fi
 
 	return ${result}
@@ -97,21 +97,21 @@ check_conflicts() {
 	#debug "Git conflicts check $1"
 	output="$(egrep -n '(=======|<<<<<<<|>>>>>>>)' $1 2>&1)"
 
-	if [ ! -z "$output" ]; then
-	lines=$(printf "$output\n" | wc -l)
-	status "CONFLICTS: $1" FAIL
+	if [[ ! -z "$output" ]]; then
+		lines=$(printf "$output\n" | wc -l)
+		status "CONFLICTS: $1" FAIL
 
-	if [ ${lines} -gt 1 ]; then
-		while read line; do
-		conflicts="$conflicts$(printf "$1 on line $line")\n"
-		done < <(printf "$output\n")
-	elif [ ${lines} -eq 1 ]; then
-		conflicts="$conflicts$(printf "$1 on line $output")\n"
-	fi
+		if [[ ${lines} -gt 1 ]]; then
+			while read line; do
+				conflicts="$conflicts$(printf "$1 on line $line")\n"
+			done < <(printf "$output\n")
+		elif [[ ${lines} -eq 1 ]]; then
+			conflicts="$conflicts$(printf "$1 on line $output")\n"
+		fi
 
-	result=1
+		result=1
 	else
-	status "CONFLICTS: $1" OK
+		status "CONFLICTS: $1" OK
 	fi
 
 	return ${result}
@@ -131,7 +131,7 @@ get_files() {
 	local result=0
 
 	for file in $(git diff --cached --name-only --diff-filter=ACMR); do
-	if [ -f ${file} ]; then
+	if [[ -f ${file} ]]; then
 		echo ${file}
 	fi
 	done
@@ -153,37 +153,35 @@ main() {
 	local dumps=''
 	local conflicts=''
 
-	update_status_length ${files}
-
-	[ "$syntax_flag" ] && for file in ${php_files}; do
-	check_syntax ${file}
+	[[ "$syntax_flag" ]] && for file in ${php_files}; do
+		check_syntax ${file}
 	done
 
-	[ "$dump_flag" ] && for file in ${php_files}; do
-	check_dumps	${file}
+	[[ "$dump_flag" ]] && for file in ${php_files}; do
+		check_dumps	${file}
 	done
 
-	[ "$conflict_flag" ] && for file in ${files}; do
-	check_conflicts	${file}
+	[[ "$conflict_flag" ]] && for file in ${files}; do
+		check_conflicts	${file}
 	done
 
 	while read line; do
-	error "$line"
+		error "$line"
 	done < <(printf "$errors")
 
 	while read line; do
-	warning "$line"
+		warning "$line"
 	done < <(printf "$dumps")
 
 	while read line; do
-	error "$line"
+		error "$line"
 	done < <(printf "$conflicts")
 
-	if [ ! -z "$errors" ]; then
-	exit 1
+	if [[ ! -z "$errors" ]]; then
+		exit 1
 	fi
 
-	if [ ! -z "$conflicts" ]; then
-	exit 1
+	if [[ ! -z "$conflicts" ]]; then
+		exit 1
 	fi
 }

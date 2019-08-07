@@ -26,10 +26,26 @@ Git hooks for PHP commits quality assurance
 
         "extra": {
             "scripts-dev": {
-                "post-install-cmd": "vendor/nafigator/php-qa-hooks/src/hooks-install.sh"
+                "post-install-cmd": "vendor/nafigator/php-qa-hooks/src/hooks-uninstall.sh"
             }
         }
+3. Run `composer install`.
+### Uninstall
+1. Remove git config section `check.php`
 
+        git config --remove-section check.php
+2. Add *extra* section to *composer.json*:
+
+        "extra": {
+            "scripts-dev": {
+                "post-install-cmd": "vendor/nafigator/php-qa-hooks/src/hooks-uninstall.sh"
+            }
+        }
+    Commit and push your changes to repository. When uninstall script completes
+    cleanup for all work copies, move to next step.
+3. Remove package:
+
+        composer require --dev nafigator/php-qa-hooks
 ### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
 
@@ -37,7 +53,7 @@ Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.4.1-orange.svg
+  [Release img]: https://img.shields.io/badge/release-0.5.0-orange.svg
   [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.png
   [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg

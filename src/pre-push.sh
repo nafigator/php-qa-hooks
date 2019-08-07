@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
 PROJECT_PATH=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
-VERSION=0.4.1
+VERSION=0.5.0
 z40=0000000000000000000000000000000000000000
 
 cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh
-. git-hooks/src/includes/pre-push.inc.sh
+. php-qa-hooks/src/includes/pre-push.inc.sh
 
 parse_options ${@}
 PARSE_RESULT=$?
 
-[ ${PARSE_RESULT} = 1 ] && exit 1
-[ ${PARSE_RESULT} = 2 ] && usage_help && exit 2
+[[ ${PARSE_RESULT} = 1 ]] && exit 1
+[[ ${PARSE_RESULT} = 2 ]] && usage_help && exit 2
 
 check_dependencies git php || exit 1
 
