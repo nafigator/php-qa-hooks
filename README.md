@@ -18,32 +18,26 @@ Git hooks for PHP commits quality assurance
 * Warn about PHP dump functions (var_dump(), var_export(), print_r())
 * Colored output
 
-### Installation
-
-Add to your project *.git/config* options:
-
-    [check.php]
-        syntax = true
-        dumps = true
-        conflicts = true
-
-Copy **pre-commit.sh** to *.git/hooks* folder in your working copy of project.
-Or use this oneliner inside root of project:
-
-    curl -s https://raw.githubusercontent.com/nafigator/git-hooks/master/pre-commit.sh > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit && printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n" >> .git/config
-
 ### Install via Composer
+1. Install package:
 
-	composer require nafigator/php-qa-hooks
+        composer require --dev nafigator/php-qa-hooks
+2. Add *extra* section to *composer.json*:
 
-## Versioning
+        "extra": {
+            "scripts-dev": {
+                "post-install-cmd": "vendor/nafigator/php-qa-hooks/src/hooks-install.sh"
+            }
+        }
+
+### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
 
 Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.4.0-orange.svg
+  [Release img]: https://img.shields.io/badge/release-0.4.1-orange.svg
   [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.png
   [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
