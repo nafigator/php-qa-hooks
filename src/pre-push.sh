@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_PATH=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
-VERSION=0.5.6
+VERSION=0.5.7
 z40=0000000000000000000000000000000000000000
 
 cd ${PROJECT_PATH}/vendor/nafigator

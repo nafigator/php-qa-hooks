@@ -11,8 +11,8 @@ function main() {
     [[ -f "$pre_commit_dst" ]] && rm "$pre_commit_dst"
     [[ -f "$pre_push_dst" ]] && rm "$pre_push_dst"
 
-    ln -s "$src/pre-commit.sh" "$pre_commit_dst"
-    ln -s "$src/pre-push.sh" "$pre_push_dst"
+    cp -u "$src/pre-commit.sh" "$pre_commit_dst"
+    cp -u "$src/pre-push.sh" "$pre_push_dst"
 
     if [[ -z "$(grep check.php ${config})" ]]; then
         printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n" >> ${config}
