@@ -51,7 +51,7 @@ check_syntax() {
 		status "SYNTAX: $1" OK
 	else
 		status "SYNTAX: $1" FAIL
-		errors="$errors$(printf "$output")\n"
+		errors="$errors$(printf "$output" | grep "[Ee]rror")\n"
 		result=1
 	fi
 
