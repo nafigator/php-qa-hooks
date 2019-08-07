@@ -3,7 +3,7 @@
     "description": "Git hooks for PHP commits QA.",
     "type": "library",
     "license": "MIT",
-    "version": "0.5.3",
+    "version": "0.5.4",
     "authors": [{
         "name": "Yancharuk Alexander",
         "role": "developer"
