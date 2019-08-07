@@ -58,7 +58,7 @@ Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.5.7-orange.svg
+  [Release img]: https://img.shields.io/badge/release-0.5.8-orange.svg
   [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.jpg
   [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
