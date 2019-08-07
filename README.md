@@ -45,7 +45,7 @@ Git hooks for PHP commits quality assurance
     cleanup for all work copies, move to next step.
 3. Remove package:
 
-        composer require --dev nafigator/php-qa-hooks
+        composer remove --dev nafigator/php-qa-hooks
 ### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
 
