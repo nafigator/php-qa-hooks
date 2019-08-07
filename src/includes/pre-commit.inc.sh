@@ -45,13 +45,13 @@ check_syntax() {
 	local output=''
 
 	#debug "Syntax check $1"
-	output="$(php -l $1 2>&1)"
+	output="$(php -nl $1 2>&1)"
 
 	if [[ $? -eq 0 ]]; then
 		status "SYNTAX: $1" OK
 	else
 		status "SYNTAX: $1" FAIL
-		errors="$errors$(printf "$output" | grep "[Ee]rror")\n"
+		errors="$errors$(printf "$output" | grep "Parse error")\n"
 		result=1
 	fi
 
