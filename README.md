@@ -65,4 +65,4 @@ Read more on [SemVer.org](http://semver.org).
   [License src]: https://tldrlegal.com/license/mit-license
   [Versioning img]: https://img.shields.io/badge/Semantic%20Versioning-2.0.0-brightgreen.svg
   [Versioning src]: https://semver.org
-  [phpcs.xml.dist]: https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xml.dist
+  [phpcs.xml.dist]: https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/3.4.2/phpcs.xml.dist
