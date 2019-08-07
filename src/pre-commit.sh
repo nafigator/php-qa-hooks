@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_PATH=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
-VERSION=0.5.4
+VERSION=0.5.5
 
 cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh

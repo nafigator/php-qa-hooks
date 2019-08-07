@@ -16,6 +16,7 @@ Git hooks for PHP commits quality assurance
 * Check for PHP syntax before commit
 * Check for Git conflict markups before commit
 * Warn about PHP dump functions (var_dump(), var_export(), print_r())
+* Check PHP code style before push
 * Colored output
 
 ### Install via Composer
@@ -29,7 +30,10 @@ Git hooks for PHP commits quality assurance
                 "post-install-cmd": "vendor/nafigator/php-qa-hooks/src/hooks-install.sh"
             }
         }
-3. Run `composer install`.
+3. Place *phpcs.xml* into root of your project.
+    > NOTE: An example phpcs.xml file can be found in the PHP_CodeSniffer repository: [phpcs.xml.dist]
+
+4. Run `composer install`.
 ### Uninstall
 1. Remove git config section `check.php`
 
@@ -46,6 +50,7 @@ Git hooks for PHP commits quality assurance
 3. Remove package:
 
         composer remove --dev nafigator/php-qa-hooks
+4. Remove *phpcs.xml* from root ot your project.
 ### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
 
@@ -53,10 +58,11 @@ Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.5.4-orange.svg
+  [Release img]: https://img.shields.io/badge/release-0.5.5-orange.svg
   [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.jpg
   [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
   [License src]: https://tldrlegal.com/license/mit-license
   [Versioning img]: https://img.shields.io/badge/Semantic%20Versioning-2.0.0-brightgreen.svg
   [Versioning src]: https://semver.org
+  [phpcs.xml.dist]: https://raw.githubusercontent.com/squizlabs/PHP_CodeSniffer/master/phpcs.xml.dist
