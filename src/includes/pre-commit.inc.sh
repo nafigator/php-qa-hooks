@@ -136,8 +136,6 @@ get_files() {
 }
 
 main() {
-	local status_length=60
-
 	check_dependencies grep egrep date php git wc || exit 1
 
 	readonly local syntax_flag=$(get_config_bool check.php.syntax)		|| exit 1
