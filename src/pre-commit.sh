@@ -6,7 +6,7 @@ cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh
 . php-qa-hooks/src/includes/pre-commit.inc.sh
 
-VERSION=0.6.0
+VERSION=0.6.1
 INTERACTIVE=$(get_config_bool check.php.colors)
 
 cd - >/dev/null

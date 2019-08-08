@@ -15,7 +15,7 @@ function main() {
     cp -u "$src/pre-push.sh" "$pre_push_dst"
 
     if [[ -z "$(grep check.php ${config})" ]]; then
-        printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n\tstyle = true\ncolors = true\n" >> ${config}
+        printf "[check.php]\n\tsyntax = true\n\tdumps = true\n\tconflicts = true\n\tstyle = true\n\tcolors = true\n" >> ${config}
     fi
 }
 

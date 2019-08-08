@@ -51,6 +51,19 @@ Git hooks for PHP commits quality assurance
 
         composer remove --dev nafigator/php-qa-hooks
 4. Remove *phpcs.xml* from root ot your project.
+
+### Configuration
+##### Available git config options:
+- check.php.syntax [true|false]
+- check.php.dumps [true|false]
+- check.php.conflicts [true|false]
+- check.php.style [true|false]
+- check.php.colors [true|false]
+
+Example (colors off):
+
+    git config check.php.colors false
+
 ### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.
 
@@ -58,7 +71,7 @@ Read more on [SemVer.org](http://semver.org).
 
   [Conventional commits src]: https://conventionalcommits.org
   [Conventional commits badge]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg
-  [Release img]: https://img.shields.io/badge/release-0.6.0-orange.svg
+  [Release img]: https://img.shields.io/badge/release-0.6.1-orange.svg
   [Release src]: https://github.com/nafigator/php-qa-hooks
   [pre-commit img]: https://github.com/nafigator/git-hooks/raw/master/.images/pre-commit.jpg
   [License img]: https://img.shields.io/badge/license-MIT-brightgreen.svg
