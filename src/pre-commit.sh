@@ -8,8 +8,8 @@ cd ${PROJECT_PATH}/vendor/nafigator
 
 cd - >/dev/null
 
-VERSION=0.6.3
-INTERACTIVE=$(get_config_bool check.php.colors)
+VERSION=0.6.4
+INTERACTIVE=$(git_config_bool check.php.colors ${PROJECT_PATH})
 
 parse_options ${@}
 PARSE_RESULT=$?
