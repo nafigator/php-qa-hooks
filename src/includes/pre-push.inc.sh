@@ -10,8 +10,13 @@ $(bold)Options:$(clr)
   -d, --debug                Run program in debug mode
 
 $(bold)Description:$(clr)
-  Git-хук предназначен для проверки стилей перед отправкой коммитов в репозиторий.
-  В данный момент производится проверка на соответствие $(bold)PSR2$(clr) стандарту:
+  Git-hooks intend for PHP code style checks in commits before push.
+
+$(bold)Configuration:$(clr)
+  In file $(bold).git/config$(clr) in [check.php] section you can enable
+  or disable check by parameter. Same via git commands:
+
+  git config check.php.style [false|true]
 
 $(bold)WWW:$(clr)
   https://www.php-fig.org/psr/psr-2

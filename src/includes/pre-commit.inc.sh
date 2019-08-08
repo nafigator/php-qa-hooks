@@ -15,7 +15,11 @@ $(bold)Description:$(clr)
 
 $(bold)Configuration:$(clr)
   In file $(bold).git/config$(clr) in [check.php] section you can enable
-  or disable check by parameters.
+  or disable check by parameters. Same via git commands:
+
+  git config check.php.syntax [false|true]
+  git config check.php.conflicts [false|true]
+  git config check.php.dumps [false|true]
 
 "
 
@@ -138,11 +142,11 @@ get_files() {
 main() {
 	check_dependencies grep egrep date php git wc || exit 1
 
-	readonly local syntax_flag=$(get_config_bool check.php.syntax)		|| exit 1
-	readonly local dump_flag=$(get_config_bool check.php.dumps)			|| exit 1
-	readonly local conflict_flag=$(get_config_bool check.php.conflicts)	|| exit 1
-	readonly local php_files=$(get_php_files)							|| exit 1
-	readonly local files=$(get_files)									|| exit 1
+	readonly local syntax_flag=$(git_config_bool check.php.syntax ${PROJECT_PATH})		|| exit 1
+	readonly local dump_flag=$(git_config_bool check.php.dumps ${PROJECT_PATH})			|| exit 1
+	readonly local conflict_flag=$(git_config_bool check.php.conflicts ${PROJECT_PATH})	|| exit 1
+	readonly local php_files=$(get_php_files)		|| exit 1
+	readonly local files=$(get_files)				|| exit 1
 	local errors=''
 	local dumps=''
 	local conflicts=''

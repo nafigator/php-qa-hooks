@@ -6,10 +6,10 @@ cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh
 . php-qa-hooks/src/includes/pre-commit.inc.sh
 
-VERSION=0.6.2
-INTERACTIVE=$(get_config_bool check.php.colors)
-
 cd - >/dev/null
+
+VERSION=0.6.3
+INTERACTIVE=$(get_config_bool check.php.colors)
 
 parse_options ${@}
 PARSE_RESULT=$?
