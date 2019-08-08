@@ -27,10 +27,6 @@ print_version() {
 	return 0
 }
 
-cleanup() {
-    unset VERSION status_length PARSE_RESULT z40
-}
-
 # Function returns list of changed PHP files
 get_commit_files() {
 	git diff-tree --no-commit-id --name-only -r $1 | egrep '(.php$|.phtml)$'

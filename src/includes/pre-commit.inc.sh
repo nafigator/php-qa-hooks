@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
 usage_help() {
-	printf "$(bold)Usage:$(clr)
+	printf "${BOLD}Usage:${CLR}
   pre-commit.sh [OPTIONS...]
 
-$(bold)Options:$(clr)
+${BOLD}Options:${CLR}
   -v, --version              Show script version
   -h, --help                 Show this help message
   -d, --debug                Run program in debug mode
 
-$(bold)Description:$(clr)
+${BOLD}Description:${CLR}
   Git-hooks intend for PHP-syntax commit checks, check for git-conflicts and
   forgotten var dumps.
 
-$(bold)Configuration:$(clr)
-  In file $(bold).git/config$(clr) in [check.php] section you can enable
+${BOLD}Configuration:${CLR}
+  In file ${BOLD}.git/config${CLR} in [check.php] section you can enable
   or disable check by parameters.
 
 "
@@ -23,13 +23,9 @@ $(bold)Configuration:$(clr)
 }
 
 print_version() {
-	printf "pre-commit.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n\n"
+	printf "pre-commit.sh ${BOLD}${VERSION}${CLR} by Yancharuk Alexander\n\n"
 
 	return 0
-}
-
-cleanup() {
-	unset VERSION PARSE_RESULT
 }
 
 # Function returns list of changed PHP files
