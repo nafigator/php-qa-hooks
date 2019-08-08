@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
 PROJECT_PATH=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
-VERSION=0.5.9
 z40=0000000000000000000000000000000000000000
 
 cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh
 . php-qa-hooks/src/includes/pre-push.inc.sh
+
+VERSION=0.6.0
+INTERACTIVE=$(get_config_bool check.php.colors)
+
+[[ $(get_config_bool check.php.style) ]] || exit 0
 
 parse_options ${@}
 PARSE_RESULT=$?
