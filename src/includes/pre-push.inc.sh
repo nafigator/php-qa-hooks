@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 usage_help() {
-	printf "${BOLD}Usage:${CLR}
+	printf "$(bold)Usage:$(clr)
   pre-push.sh [OPTIONS...]
 
-${BOLD}Options:${CLR}
+$(bold)Options:$(clr)
   -v, --version              Show script version
   -h, --help                 Show this help message
   -d, --debug                Run program in debug mode
 
-${BOLD}Description:${CLR}
+$(bold)Description:$(clr)
   Git-хук предназначен для проверки стилей перед отправкой коммитов в репозиторий.
-  В данный момент производится проверка на соответствие ${BOLD}PSR2${CLR} стандарту:
+  В данный момент производится проверка на соответствие $(bold)PSR2$(clr) стандарту:
 
-${BOLD}WWW:${CLR}
+$(bold)WWW:$(clr)
   https://www.php-fig.org/psr/psr-2
 
 "
@@ -22,7 +22,7 @@ ${BOLD}WWW:${CLR}
 }
 
 print_version() {
-	printf "pre-push.sh ${BOLD}${VERSION}${CLR} by Yancharuk Alexander\n\n"
+	printf "pre-push.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n\n"
 
 	return 0
 }
