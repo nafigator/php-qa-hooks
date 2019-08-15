@@ -29,12 +29,12 @@
     },
     "keywords": [
         "git",
-        "hooks",
-        "bash",
-        "scripts",
-        "syntax",
-        "conflicts",
-        "qa",
-        "php"
+        "git-conflicts",
+        "git-hooks",
+        "bash-script",
+        "php-syntax",
+        "php",
+        "code-style",
+        "code-standard"
     ]
 }
