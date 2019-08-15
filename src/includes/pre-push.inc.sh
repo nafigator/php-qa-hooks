@@ -20,6 +20,7 @@ $(bold)Configuration:$(clr)
 
 $(bold)WWW:$(clr)
   https://www.php-fig.org/psr/psr-2
+  https://www.php-fig.org/psr/psr-12
 
 "
 
