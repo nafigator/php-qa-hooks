@@ -18,7 +18,7 @@ PARSE_RESULT=$?
 [[ ${PARSE_RESULT} = 1 ]] && exit 1
 [[ ${PARSE_RESULT} = 2 ]] && usage_help && exit 2
 
-check_dependencies git php || exit 1
+check_dependencies git php grep sort tr || exit 1
 
 while read local_ref local_sha remote_ref remote_sha; do
 	if [[ ${local_sha} != ${z40} ]]; then
@@ -32,11 +32,13 @@ while read local_ref local_sha remote_ref remote_sha; do
 
 		while read file; do
 			if [[ -e "$PROJECT_PATH/$file" ]]; then
-				files="$files $file"
+				files="$files\n$file"
 			fi
 		done < <(get_commit_files ${range})
 	fi
 done
+
+files=$(printf "$files" | grep . | sort -u | tr '\n' ' ')
 
 if [[ -z "$files" ]]; then
 	inform 'No files for style check'
