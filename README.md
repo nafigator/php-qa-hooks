@@ -17,6 +17,7 @@ Git hooks for PHP commits quality assurance
 * Check for Git conflict markups before commit
 * Warn about PHP dump functions (var_dump(), var_export(), print_r())
 * Check PHP code style before push
+* Run PHPUnit tests before push
 * Colored output
 
 ### Install via Composer
