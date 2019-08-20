@@ -98,15 +98,15 @@ main() {
 	readonly local style_flag=$(git_config_bool check.php.style ${PROJECT_PATH})
 	readonly local phpunit_flag=$(git_config_bool check.php.phpunit ${PROJECT_PATH})
 
-	[[ ${style_flag} == true ]] || [[ ${phpunit_flag} == true ]] || exit 0
+	[[ ${style_flag} == 1 ]] || [[ ${phpunit_flag} == 1 ]] || exit 0
 
 	check_dependencies git php grep sort tr || exit 1
 
-	if [[ ${style_flag} == true ]]; then
+	if [[ ${style_flag} == 1 ]]; then
 		check_style ${@} || exit 1
 	fi
 
-	if [[ ${phpunit_flag} == true ]]; then
+	if [[ ${phpunit_flag} == 1 ]]; then
 		run_phpunit || exit 1
 	fi
 }

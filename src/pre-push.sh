@@ -7,7 +7,7 @@ cd ${PROJECT_PATH}/vendor/nafigator
 . bash-helpers/src/bash-helpers.sh
 . php-qa-hooks/src/includes/pre-push.inc.sh
 
-VERSION=0.6.4
+VERSION=0.7.0
 INTERACTIVE=$(git_config_bool check.php.colors ${PROJECT_PATH})
 
 parse_options ${@}
