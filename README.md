@@ -8,7 +8,7 @@ Git hooks for PHP commits quality assurance
 ### Requirements
 * git
 * bash
-* PHP
+* PHP CLI
 * Core utils
 
 ### Features
@@ -53,16 +53,20 @@ Git hooks for PHP commits quality assurance
 4. Remove *phpcs.xml* from root ot your project.
 
 ### Configuration
-##### Available git config options:
-- check.php.syntax [true|false]
-- check.php.dumps [true|false]
-- check.php.conflicts [true|false]
-- check.php.style [true|false]
-- check.php.colors [true|false]
-
 Example (colors off):
 
     git config check.php.colors false
+
+Available git config options:
+
+    check.php.colors [true|false]
+    check.php.conflicts [true|false]
+    check.php.dumps [true|false]
+    check.php.phpunit [true|false]
+    check.php.style [true|false]
+    check.php.syntax [true|false]
+
+>NOTE: PHPUnit disabled by default. You need to enable it manually.
 
 ### Versioning
 This software follows *"Semantic Versioning"* specifications. All function signatures declared as public API.

@@ -19,7 +19,8 @@
     "require": {
         "nafigator/bash-helpers": "0.*",
         "squizlabs/php_codesniffer": "3.*",
-        "neronmoon/scriptsdev": "0.*"
+        "neronmoon/scriptsdev": "0.*",
+        "phpunit/phpunit": "*"
     },
     "config": {
         "preferred-install": {
