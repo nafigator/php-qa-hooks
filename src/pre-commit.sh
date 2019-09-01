@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# Pre-commit git-hook.
+# Use for running QA jobs before commit:
+#	- Check PHP syntax errors
+#	- Check for unresolved git conflicts
+#	- Warn about forgotten PHP dump-functions
+#
+# Depends on "bash-helpers" functions.
+# @see https://github.com/nafigator/bash-helpers
+
 PROJECT_PATH=$(dirname $(dirname $(dirname $(readlink -f "$0"))))
 
 cd ${PROJECT_PATH}/vendor/nafigator
@@ -8,7 +17,7 @@ cd ${PROJECT_PATH}/vendor/nafigator
 
 cd - >/dev/null
 
-VERSION=0.7.0
+VERSION=1.0.0
 INTERACTIVE=$(git_config_bool check.php.colors ${PROJECT_PATH})
 
 parse_options ${@}

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Uninstall and configure cleanup for pre-commit and pre-push hooks.
+
 function main() {
     readonly local project=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
     readonly local config="$project/.git/config"

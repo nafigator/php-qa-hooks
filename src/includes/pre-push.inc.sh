@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This include-file contains functions used in pre-push.sh.
+
 usage_help() {
 	printf "$(bold)Usage:$(clr)
   pre-push.sh [OPTIONS...]

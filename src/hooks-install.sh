@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Install and configure pre-commit and pre-push hooks.
+
 function main() {
     readonly local project=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
     readonly local src=$(dirname $(readlink -f "$0"))
