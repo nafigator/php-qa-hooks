@@ -17,7 +17,7 @@ cd ${PROJECT_PATH}/vendor/nafigator
 
 cd - >/dev/null
 
-VERSION=1.0.0
+VERSION=1.0.1
 INTERACTIVE=$(git_config_bool check.php.colors ${PROJECT_PATH})
 
 parse_options ${@}
