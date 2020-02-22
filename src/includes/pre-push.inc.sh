@@ -76,7 +76,10 @@ check_style() {
 		inform 'No files for style check'
 	else
 		cd ${PROJECT_PATH}
-		vendor/bin/phpcs -n ${files}
+
+		while read file; do
+			git cat-file -p HEAD:${file} | vendor/bin/phpcs --colors -n --stdin-path=${file} -
+		done <<< "$files"
 
 		result=$?
 
