@@ -78,7 +78,7 @@ check_style() {
 		cd ${PROJECT_PATH}
 
 		while read file; do
-			git cat-file -p HEAD:${file} | vendor/bin/phpcs --colors -n --stdin-path=${file} -
+			git cat-file -p HEAD:${file} | vendor/bin/phpcs --colors -sn --stdin-path=${file} -
 		done <<< "$files"
 
 		result=$?
