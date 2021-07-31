@@ -3,16 +3,16 @@
 # Uninstall and configure cleanup for pre-commit and pre-push hooks.
 
 function main() {
-    readonly local project=$(dirname $(dirname $(dirname $(dirname $(dirname $(readlink -f "$0"))))))
-    readonly local config="$project/.git/config"
-    readonly local hooks_dir="$project/.git/hooks"
-    readonly local pre_commit_dst="$hooks_dir/pre-commit"
-    readonly local pre_push_dst="$hooks_dir/pre-push"
+    local -r project=$(dirname "$(dirname "$(dirname "$(dirname "$(dirname "$(readlink -f "$0")")")")")")
+    local -r config="$project/.git/config"
+    local -r hooks_dir="$project/.git/hooks"
+    local -r pre_commit_dst="$hooks_dir/pre-commit"
+    local -r pre_push_dst="$hooks_dir/pre-push"
 
     [[ -f "$pre_commit_dst" ]] && rm "$pre_commit_dst"
     [[ -f "$pre_push_dst" ]] && rm "$pre_push_dst"
 
-    if [[ ! -z "$(grep check.php ${config})" ]]; then
+    if grep -q check.php "$config"; then
         git config --remove-section check.php
     fi
 }

@@ -3,7 +3,7 @@
 # This include-file contains functions used in pre-commit.sh.
 
 usage_help() {
-	printf "$(bold)Usage:$(clr)
+	echo -e "$(bold)Usage:$(clr)
   pre-commit.sh [OPTIONS...]
 
 $(bold)Options:$(clr)
@@ -22,21 +22,20 @@ $(bold)Configuration:$(clr)
   git config check.php.syntax [false|true]
   git config check.php.conflicts [false|true]
   git config check.php.dumps [false|true]
-
 "
 
 	return 0
 }
 
 print_version() {
-	printf "pre-commit.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n\n"
+	echo -e "pre-commit.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n"
 
 	return 0
 }
 
 # Function returns list of changed PHP files
 get_commit_files() {
-	git diff-tree --no-commit-id --name-only -r $1 | egrep '(.php$|.phtml)$'
+	git diff-tree --no-commit-id --name-only -r "$1" | grep -E '(.php$|.phtml)$'
 
 	return $?
 }
@@ -44,41 +43,41 @@ get_commit_files() {
 # Function for checking PHP syntax
 check_syntax() {
 	local result=0
-	local output=''
+	local output
 
-	#debug "Syntax check $1"
-	output="$(php -nl $1 2>&1)"
+	output="$(php -nl "$1" 2>&1)"
 
+	# shellcheck disable=SC2181
 	if [[ $? -eq 0 ]]; then
 		status "SYNTAX: $1" OK
 	else
 		status "SYNTAX: $1" FAIL
-		errors="$errors$(printf "$output" | grep "Parse error")\n"
+		errors="$errors$(echo "$output" | grep "Parse error")\n"
 		result=1
 	fi
 
-	return ${result}
+	return $result
 }
 
 # Function for checking PHP dumps
 check_dumps() {
 	local result=0
-	local output=''
-	local line=''
+	local output
+	local line
 	local lines=0
 
-	output="$(egrep -Tn '(var_dump|var_export|print_r)' $1 2>&1)"
+	output="$(grep -ETn '(var_dump|var_export|print_r)' "$1" 2>&1)"
 
-	if [[ ! -z "$output" ]]; then
-		lines=$(printf "$output\n" | wc -l)
+	if [[ -n "$output" ]]; then
+		lines=$(echo "$output" | wc -l)
 		status "DUMPS: $1" FAIL
 
 		if [[ ${lines} -gt 1 ]]; then
-			while read line; do
-				dumps="$dumps$(printf "$1 on line $line")\n"
-			done < <(printf "$output\n")
+			while read -r line; do
+				dumps="${dumps}${1} on line ${line}\n"
+			done < <(echo "$output")
 		elif [[ ${lines} -eq 1 ]]; then
-			dumps="$dumps$(printf "$1 on line $output")\n"
+			dumps="${dumps}${1} on line ${output}\n"
 		fi
 
 		result=1
@@ -92,23 +91,23 @@ check_dumps() {
 # Function for checking git conflicts
 check_conflicts() {
 	local result=0
-	local output=''
-	local line=''
+	local output
+	local line
 	local lines=0
 
 	#debug "Git conflicts check $1"
-	output="$(egrep -n '(=======|<<<<<<<|>>>>>>>)' $1 2>&1)"
+	output="$(grep -En '(=======|<<<<<<<|>>>>>>>)' "$1" 2>&1)"
 
-	if [[ ! -z "$output" ]]; then
-		lines=$(printf "$output\n" | wc -l)
+	if [[ -n "$output" ]]; then
+		lines=$(echo "$output" | wc -l)
 		status "CONFLICTS: $1" FAIL
 
 		if [[ ${lines} -gt 1 ]]; then
-			while read line; do
-				conflicts="$conflicts$(printf "$1 on line $line")\n"
-			done < <(printf "$output\n")
+			while read -r line; do
+				conflicts="${conflicts}${1} on line $line\n"
+			done < <(echo "$output")
 		elif [[ ${lines} -eq 1 ]]; then
-			conflicts="$conflicts$(printf "$1 on line $output")\n"
+			conflicts="${conflicts}${1} on line $output\n"
 		fi
 
 		result=1
@@ -123,7 +122,7 @@ check_conflicts() {
 get_php_files() {
 	local result=0
 
-	git diff --cached --name-only --diff-filter=ACMR | egrep '(.php$|.phtml)$'
+	git diff --cached --name-only --diff-filter=ACMR | grep -E '(.php$|.phtml)$'
 
 	return ${result}
 }
@@ -134,7 +133,7 @@ get_files() {
 
 	for file in $(git diff --cached --name-only --diff-filter=ACMR); do
 	if [[ -f ${file} ]]; then
-		echo ${file}
+		echo "$file"
 	fi
 	done
 
@@ -142,46 +141,46 @@ get_files() {
 }
 
 main() {
-	check_dependencies grep egrep date php git wc || exit 1
+	check_dependencies grep date php git wc || exit 1
 
-	readonly local syntax_flag=$(git_config_bool check.php.syntax ${PROJECT_PATH})		|| exit 1
-	readonly local dump_flag=$(git_config_bool check.php.dumps ${PROJECT_PATH})			|| exit 1
-	readonly local conflict_flag=$(git_config_bool check.php.conflicts ${PROJECT_PATH})	|| exit 1
-	readonly local php_files=$(get_php_files)		|| exit 1
-	readonly local files=$(get_files)				|| exit 1
-	local errors=''
-	local dumps=''
-	local conflicts=''
+	local -r syntax_flag=$(git_config_bool check.php.syntax "$PROJECT_PATH")			|| exit 1
+	local -r dump_flag=$(git_config_bool check.php.dumps "$PROJECT_PATH")					|| exit 1
+	local -r conflict_flag=$(git_config_bool check.php.conflicts "$PROJECT_PATH")	|| exit 1
+	local -r php_files=$(get_php_files)		|| exit 1
+	local -r files=$(get_files)						|| exit 1
+	local errors
+	local dumps
+	local conflicts
 
 	[[ "$syntax_flag" ]] && for file in ${php_files}; do
-		check_syntax ${file}
+		check_syntax "$file"
 	done
 
 	[[ "$dump_flag" ]] && for file in ${php_files}; do
-		check_dumps	${file}
+		check_dumps	"$file"
 	done
 
 	[[ "$conflict_flag" ]] && for file in ${files}; do
-		check_conflicts	${file}
+		check_conflicts	"$file"
 	done
 
-	while read line; do
+	while read -r line; do
 		error "$line"
-	done < <(printf "$errors")
+	done < <(echo -en "$errors")
 
-	while read line; do
+	while read -r line; do
 		warning "$line"
-	done < <(printf "$dumps")
+	done < <(echo -en "$dumps")
 
-	while read line; do
+	while read -r line; do
 		error "$line"
-	done < <(printf "$conflicts")
+	done < <(echo -en "$conflicts")
 
-	if [[ ! -z "$errors" ]]; then
+	if [[ -n "$errors" ]]; then
 		exit 1
 	fi
 
-	if [[ ! -z "$conflicts" ]]; then
+	if [[ -n "$conflicts" ]]; then
 		exit 1
 	fi
 }

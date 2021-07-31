@@ -2,8 +2,8 @@
 
 # This include-file contains functions used in pre-push.sh.
 
-usage_help() {
-	printf "$(bold)Usage:$(clr)
+function usage_help() {
+	echo -e "$(bold)Usage:$(clr)
   pre-push.sh [OPTIONS...]
 
 $(bold)Options:$(clr)
@@ -23,26 +23,25 @@ $(bold)Configuration:$(clr)
 $(bold)WWW:$(clr)
   https://www.php-fig.org/psr/psr-2
   https://www.php-fig.org/psr/psr-12
-
 "
 
 	return 0
 }
 
-print_version() {
-	printf "pre-push.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n\n"
+function print_version() {
+	echo -e "pre-push.sh $(bold)${VERSION}$(clr) by Yancharuk Alexander\n"
 
 	return 0
 }
 
 # Function returns list of changed PHP files
-get_commit_files() {
-	git diff-tree --no-commit-id --name-only -r $1 | egrep '(.php|.phtml)$'
+function get_commit_files() {
+	git diff-tree --no-commit-id --name-only -r "$1" | grep -E '(.php|.phtml)$'
 
 	return $?
 }
 
-check_style() {
+function check_style() {
 	local result=0
 	local local_ref
 	local local_sha
@@ -52,9 +51,9 @@ check_style() {
 	local files
 	local range
 
-	while read local_ref local_sha remote_ref remote_sha; do
-		if [[ ${local_sha} != ${Z40} ]]; then
-			if [[ ${remote_sha} = ${Z40} ]]; then
+	while read -r local_ref local_sha remote_ref remote_sha; do
+		if [[ ${local_sha} != "$Z40" ]]; then
+			if [[ ${remote_sha} = "$Z40" ]]; then
 				# New branch, examine all commits
 				range="$local_sha"
 			else
@@ -62,23 +61,23 @@ check_style() {
 				range="$remote_sha..$local_sha"
 			fi
 
-			while read file; do
+			while read -r file; do
 				if [[ -e "$PROJECT_PATH/$file" ]]; then
 					files="$files\n$file"
 				fi
-			done < <(get_commit_files ${range})
+			done < <(get_commit_files "$range")
 		fi
 	done
 
-	files=$(printf "$files" | grep . | sort -u | tr '\n' ' ')
+	files=$(echo -en "$files" | grep . | sort -u | tr '\n' ' ')
 
 	if [[ -z "$files" ]]; then
 		inform 'No files for style check'
 	else
-		cd ${PROJECT_PATH}
+		cd "$PROJECT_PATH" || exit 1
 
-		while read file; do
-			git cat-file -p HEAD:${file} | vendor/bin/phpcs --colors -sn --stdin-path=${file} -
+		while read -r file; do
+			git cat-file -p "HEAD:$file" | vendor/bin/phpcs --colors -sn --stdin-path="$file" -
 		done <<< "$files"
 
 		result=$?
@@ -89,8 +88,8 @@ check_style() {
 	return ${result}
 }
 
-run_phpunit() {
-	cd ${PROJECT_PATH}
+function run_phpunit() {
+	cd "$PROJECT_PATH" || exit 1
 
 	vendor/bin/phpunit
 
@@ -99,16 +98,16 @@ run_phpunit() {
 	return ${result}
 }
 
-main() {
-	readonly local style_flag=$(git_config_bool check.php.style ${PROJECT_PATH})
-	readonly local phpunit_flag=$(git_config_bool check.php.phpunit ${PROJECT_PATH})
+function main() {
+	local -r style_flag=$(git_config_bool check.php.style "$PROJECT_PATH")
+	local -r phpunit_flag=$(git_config_bool check.php.phpunit "$PROJECT_PATH")
 
 	[[ ${style_flag} == 1 ]] || [[ ${phpunit_flag} == 1 ]] || exit 0
 
 	check_dependencies git php grep sort tr || exit 1
 
 	if [[ ${style_flag} == 1 ]]; then
-		check_style ${@} || exit 1
+		check_style "$@" || exit 1
 	fi
 
 	if [[ ${phpunit_flag} == 1 ]]; then
